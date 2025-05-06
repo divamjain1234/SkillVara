@@ -1,0 +1,19 @@
+# Backend ignores
+backend/.env
+backend/node_modules/
+backend/public/images/  # Ignores all images in /public/images
+backend/npm-debug.log
+
+# Frontend ignores
+frontend/.env
+frontend/public/images/ 
+frontend/node_modules/
+frontend/.cache/
+frontend/dist/
+# Logs
+*.log
+
+# Mac/Windows/Linux system files
+.DS_Store
+Thumbs.db
+
