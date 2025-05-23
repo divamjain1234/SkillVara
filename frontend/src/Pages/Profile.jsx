@@ -24,7 +24,6 @@ const Profile = () => {
       fetchprofile()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
-    console.log(profile)
   return (
     <div>
      {profile && (<div className="bg-white h-screen w-full p-6 text-zinc-700 flex flex-col gap-3 py-14 ">
