@@ -15,7 +15,6 @@ const Logout = () => {
           {},
           { withCredentials: true }
         );
-        console.log(response.data);
         setuser(null);
         navigate("/");
       } catch (error) {
