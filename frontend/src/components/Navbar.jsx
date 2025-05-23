@@ -4,7 +4,6 @@ import { AuthContext } from '../context/AuthContext'
 import Button from './Button'
 const Navbar = () => {
     const {user}=useContext(AuthContext) 
-    console.log(user)
     const initial=user?user.username.charAt(0).toUpperCase() : '';
   return (
 <div className='w-full h-16 fixed'>
