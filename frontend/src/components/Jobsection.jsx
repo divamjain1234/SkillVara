@@ -5,7 +5,7 @@ const Jobsection = () => {
   const[jobs,setjobs]=useState(null)
   useEffect( ()=>{
     const Alljobes=async ()=>{
-      let response=await axios.get("http://localhost:3000/job/jobsdata")
+      let response=await axios.get(`${process.env.REACT_APP_API_URL}/job/jobsdata`)
       setjobs(response.data)
     }
     Alljobes()
