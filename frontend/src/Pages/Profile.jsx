@@ -10,7 +10,7 @@ const Profile = () => {
   useEffect(()=>{
     const fetchprofile=async()=>{
      try {
-      let response=await axios.get("http://localhost:3000/user/profileview",{
+      let response=await axios.get(`${process.env.REACT_APP_API_URL}/user/profileview`,{
         params:{
           username:user.username,
           email:user.email
