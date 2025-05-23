@@ -24,7 +24,6 @@ const AuthProvider = ({ children }) => {
       
       // Use the unified updater
       updateAuthState(response.data.user, true);
-      console.log(user)
       return { success: true, data: response.data };
     } catch (error) {
       updateAuthState(null, false);
