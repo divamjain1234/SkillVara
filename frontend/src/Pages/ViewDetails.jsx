@@ -18,7 +18,7 @@ const ViewDetails = () => {
   
   useEffect(()=>{
     const handlejobs=async()=>{
-      let response=await axios.get(`http://localhost:3000/job/viewdetails/${id}`)
+      let response=await axios.get(`${process.env.REACT_APP_API_URL}/job/viewdetails/${id}`)
          setjob(response.data)
     }
     if(id){
