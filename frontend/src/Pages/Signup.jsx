@@ -10,7 +10,6 @@ const Signup = () => {
     await signup(data)
     navigate('/main')
   }
-  console.log(user);
     return (
       <div className='w-full h-screen bg-[#798E9B] px-[90px] py-[70px]'>
       <div className='w-[360px] text-black bg-zinc-200 px-4 py-3 h-94 mx-auto border-[2px] border-zinc-800 rounded-lg'>
