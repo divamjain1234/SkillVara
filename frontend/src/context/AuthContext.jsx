@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
   const login = async ({ email, password }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/user/login",
+        `${process.env.REACT_APP_API_URL}/user/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -34,7 +34,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/user/auth", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/auth`, {
           withCredentials: true
         });
         updateAuthState(response.data.user, true);
@@ -57,7 +57,7 @@ const AuthProvider = ({ children }) => {
       signup: async ({ username, email, password }) => {
         try {
           const response = await axios.post(
-            "http://localhost:3000/user/signup",
+            `${process.env.REACT_APP_API_URL}/user/signup`,
             { username, email, password },
             { withCredentials: true }
           );
