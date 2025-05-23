@@ -11,7 +11,6 @@ const Login = () => {
      await login(data)
      navigate('/main')
     }
-    console.log(user);
   return (
     <div className='w-full h-screen bg-[#87A0B2] px-[90px] py-[70px]'>
       <div className='w-[360px] text-black bg-white px-4 py-3 h-94 mx-auto border-[2px] border-zinc-800 rounded-lg'>
