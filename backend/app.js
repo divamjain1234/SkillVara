@@ -10,7 +10,7 @@ const userroutes=require('./routes/userRoutes')
 const jobroutes=require('./routes/jobRoutes')
 const cors=require('cors')
 app.use(cors({
-    origin: "https://skillvara-frontend.onrender.com", 
+    origin: "https://localhost:5173", 
     credentials: true
   }));
 app.use(cookieparser())
