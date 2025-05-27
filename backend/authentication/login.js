@@ -12,8 +12,8 @@ const login=async(req,res)=>{
            let token=jwt.sign({id:loginuser._id,email:loginuser.email},process.env.JWT_SECRET)
               res.cookie('token',token,{
                 httpOnly:true,
-                sameSite:'Lax',
-                secure:false
+                sameSite:'None',
+                secure:true
               })
               res.status(202).json({
                 message:'login successfully',
