@@ -14,6 +14,22 @@ const AuthProvider = ({ children }) => {
     setisAuthenticated(authenticated);
   };
 
+const logout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/user/logout`, 
+        {}, 
+        { withCredentials: true }
+      );
+      updateAuthState(null,false)
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear user even if API fails
+     updateAuthState(null,false)
+    }
+  };
+
+
   const login = async ({ email, password }) => {
     try {
       const response = await axios.post(
@@ -53,6 +69,7 @@ const AuthProvider = ({ children }) => {
       user,
       isAuthenticated,
       loading,
+      logout,
       login,
       signup: async ({ username, email, password }) => {
         try {

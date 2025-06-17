@@ -7,14 +7,11 @@ const profileview = async (req, res) => {
     if (!profile) {
       return res.status(404).send({ message: 'Profile not found' });
     }
-    // res.send(profile);
-    const baseURL = `${req.protocol}://${req.get('host')}`;
-
-    res.send({
+res.send({
       ...profile._doc,
-      imageURL: profile.image ? `${baseURL}/images/${profile.image}` : null,
-      resumeURL: profile.resume ? `${baseURL}/images/${profile.resume}` : null,
-      refrenceURL: profile.refrence ? `${baseURL}/images/${profile.refrence}` : null,
+      imageURL: profile.image || null,
+   resumeURL: profile.resume || null,
+      refrenceURL: profile.refrence || null,
     });
   } catch (error) {
     console.error(error);
@@ -23,3 +20,4 @@ const profileview = async (req, res) => {
 };
 
 module.exports = { profileview };
+

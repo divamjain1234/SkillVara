@@ -4,8 +4,9 @@ import SkillsInput from "../components/Skills"
 import {createprofile} from '../services/Profileservice'
 import { useForm } from "react-hook-form"
 import { AuthContext } from "../context/AuthContext"
+import { useNavigate } from "react-router-dom"
 const ProfileForm = () => {
-
+  const navigate=useNavigate()
   const {user}=useContext(AuthContext)
   const [skills, setSkills] = useState([]);
 
@@ -28,7 +29,10 @@ const ProfileForm = () => {
   // Log FormData entries
   for (const [key, value] of formData.entries()) {
   }
-    await createprofile(formData)
+    const res = await createprofile(formData);
+if (res && res.data) {
+  navigate('/profile');
+}
   }
  const{register,handleSubmit} =useForm()
  if (!user) {
