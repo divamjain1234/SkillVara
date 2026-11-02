@@ -1,5 +1,4 @@
 import React from 'react'
-
 const Filters = () => {
   return (
     <div className='h-[500px]  rounded-md w-[250px] p-2 text-zinc-600'>

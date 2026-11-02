@@ -2,6 +2,7 @@ import Jobcomponent from '../components/Jobcomponent'
 import Filters from './Filters'
 import { useEffect, useState } from "react"
 import axios from 'axios'
+import Navbar from './Navbar'
 
 const Mainsection = () => {
   const [jobs, setJobs] = useState(null)
@@ -9,12 +10,13 @@ const Mainsection = () => {
   useEffect(() => {
     const AllJobs = async () => {
       let response = await axios.get(`${import.meta.env.VITE_API_URL}/job/jobsdata`)
-      setJobs(response.data)
+      setJobs(response.data.jobs)
     }
     AllJobs()
   }, [])
 
   return (
+
     <div className="bg-[#BDD2D2] min-h-screen pt-20 px-6">
       {jobs && (
         <div className="flex flex-col lg:flex-row gap-8">

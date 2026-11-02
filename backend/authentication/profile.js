@@ -1,9 +1,10 @@
 const userprofilemodel = require('../models/userprofile');
-
+// Must run after isloggedin. The profile that gets saved is always the logged-in
+// user's own (taken from the cookie), never an email sent in the request body.
 const createprofile = async (req, res) => {
+  console.log('FILES:', JSON.stringify(req.files, null, 2));
   try {
     const {
-      email,
       phoneNo,
       degree,
       expyear,
@@ -19,11 +20,6 @@ const createprofile = async (req, res) => {
       skills
     } = req.body;
 
-    // ✅ Use .path instead of .filename for Cloudinary URLs
-    const image = req.files?.image?.[0]?.path || "";
-    const resume = req.files?.resume?.[0]?.path || "";
-    const refrence = req.files?.refrence?.[0]?.path || "";
-
     let skillsArray = skills;
     if (typeof skills === 'string') {
       skillsArray = [skills];
@@ -34,19 +30,30 @@ const createprofile = async (req, res) => {
     const links = { linkedin, github };
     const preferences = { jobType: jobtype, location: region };
 
+    const update = {
+      user: req.user._id,
+      username: req.user.username,
+      PhoneNo: phoneNo,
+      experience: [experience],
+      education: [education],
+      socialLinks: [links],
+      preferences: [preferences],
+      skills: skillsArray,
+    };
+
+    // Only overwrite a file when a new one was uploaded. Before, saving the form
+    // again without re-uploading wiped the existing image/resume.
+    // (.path holds the Cloudinary URL)
+    const image = req.files?.image?.[0]?.path;
+    const resume = req.files?.resume?.[0]?.path;
+    const refrence = req.files?.refrence?.[0]?.path;
+    if (image) update.image = image;
+    if (resume) update.resume = resume;
+    if (refrence) update.refrence = refrence;
+
     const profile = await userprofilemodel.findOneAndUpdate(
-      { email: email },
-      {
-        PhoneNo: phoneNo,
-        experience: [experience],
-        education: [education],
-        socialLinks: [links],
-        preferences: [preferences],
-        skills: skillsArray,
-        image, // ✅ cloudinary URL
-        resume,
-        refrence
-      },
+      { email: req.user.email },
+      update,
       { new: true, upsert: true } // upsert in case it's a first-time insert
     );
 
@@ -56,6 +63,9 @@ const createprofile = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(SyntaxError);                              // as a separate argument, not concatenated
+console.error(JSON.stringify(err, null, 2));     // if it still shows [object Object]
+console.error(err.message, err.http_code);       // Cloudinary-style errors
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }

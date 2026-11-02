@@ -71,11 +71,11 @@ const logout = async () => {
       loading,
       logout,
       login,
-      signup: async ({ username, email, password }) => {
+      signup: async ({ username, email, password, role, companyName }) => {
         try {
           const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/user/signup`,
-            { username, email, password },
+            { username, email, password, role, companyName },
             { withCredentials: true }
           );
           updateAuthState(response.data.user, true);

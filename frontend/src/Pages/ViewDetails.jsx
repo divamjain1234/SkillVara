@@ -1,69 +1,104 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useParams } from 'react-router-dom'
-const ViewDetails = () => {
-  const{id}=useParams()
-  const[job,setjob]=useState(null)
-  const[applied,setapplied]=useState(false)
-  const [message, setMessage] = useState('');
-  const handlesubmit=()=>{
-    setapplied(true)
-    setMessage('Your details have been sent to recruiter ✅');
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import api from '../services/api'
+import { AuthContext } from '../context/AuthContext'
 
-    // Hide message after 3 seconds
-    setTimeout(() => {
-      setMessage('');
-    }, 3000);
-  };
-  
-  useEffect(()=>{
-    const handlejobs=async()=>{
-      let response=await axios.get(`${import.meta.env.VITE_API_URL}/job/viewdetails/${id}`)
-         setjob(response.data)
+const ViewDetails = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { user, isAuthenticated } = useContext(AuthContext)
+  const [job, setjob] = useState(null)
+  const [notFound, setNotFound] = useState(false)
+  const [applied, setapplied] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [message, setMessage] = useState(null) // { text, ok, profileLink }
+
+  useEffect(() => {
+    const handlejobs = async () => {
+      try {
+        const response = await api.get(`/job/viewdetails/${id}`)
+        setjob(response.data)
+        setapplied(!!response.data.hasApplied)
+      } catch (error) {
+        console.log(error)
+        setNotFound(true)
+      }
     }
-    if(id){
-      handlejobs()
+    if (id) handlejobs()
+  }, [id])
+
+  const handlesubmit = async () => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
     }
-  },[id])
+    setSending(true)
+    try {
+      await api.post(`/job/apply/${id}`)
+      setapplied(true)
+      setMessage({ text: 'Your application has been sent to the employer ✅', ok: true })
+    } catch (error) {
+      const data = error.response?.data
+      if (error.response?.status === 409) setapplied(true)
+      setMessage({
+        text: data?.message || 'Could not send your application',
+        ok: false,
+        profileLink: data?.code === 'PROFILE_INCOMPLETE',
+      })
+    } finally {
+      setSending(false)
+      setTimeout(() => setMessage(null), 5000)
+    }
+  }
+
+  if (notFound) return <div className='p-10 text-center'>This job could not be found. <Link className='underline' to='/'>Back to jobs</Link></div>
+  if (!job) return null
+
+  const isEmployer = user?.role === 'employer'
+  const closed = job.isActive === false
+
   return (
-    <div>
-    {job && (
-      <div className='w-full h-screen bg-amber-100 p-1 text-black' >
-        {message && (
-            <div className='bg-green-500 text-white px-4 py-2 text-center font-medium'>
-              {message}
-            </div>
+    <div className='w-full min-h-screen bg-amber-100 p-1 text-black'>
+      {message && (
+        <div className={`${message.ok ? 'bg-green-500' : 'bg-red-500'} text-white px-4 py-2 text-center font-medium`}>
+          {message.text}{' '}
+          {message.profileLink && <Link className='underline' to='/profileform'>Complete profile</Link>}
+        </div>
+      )}
+      <div className='max-w-[900px] bg-sky-300 mx-auto my-10 p-5 rounded-lg'>
+        <h1 className='text-3xl font-bold text-center'>{job.Title}</h1>
+        <h2 className='font-medium text-zinc-700 text-center'>{job.Company}</h2>
+        <div className='mt-6'>
+          <h1 className='font-semibold'>About the job</h1>
+          <p className='text-zinc-700 whitespace-pre-line'>{job.Description || 'No description provided.'}</p>
+        </div>
+        {job.Skills?.length > 0 && (
+          <div className='mt-4 flex flex-wrap gap-2'>
+            {job.Skills.map((s) => <span key={s} className='bg-white/70 rounded-full px-3 py-1 text-sm'>{s}</span>)}
+          </div>
+        )}
+        <div className='flex flex-wrap justify-between gap-4 text-xl mt-8 px-4'>
+          <h1>{job.Salary}</h1>
+          <h1>{job.Duration}</h1>
+          <h1>{job.Location}</h1>
+          <h1>{job.Jobtype}</h1>
+        </div>
+        {job.createdAt && (
+          <p className='mt-5 px-4 text-green-700'>Posted on {new Date(job.createdAt).toLocaleDateString()}</p>
+        )}
+        <div className='mt-10 flex justify-between items-center px-4'>
+          <p className='text-zinc-700'>{closed ? 'This job is closed' : 'Be an early applicant'}</p>
+          {!isEmployer && (
+            <button
+              onClick={handlesubmit}
+              disabled={applied || sending || closed}
+              className={`px-4 py-2 rounded-xl ${applied ? 'bg-blue-700 text-white' : 'bg-red-200'} disabled:opacity-70`}
+            >
+              {applied ? 'Applied' : sending ? 'Sending...' : 'Apply'}
+            </button>
           )}
-      <div className='w-[900px] border[1px] border-zinc-800 bg-sky-300 mx-auto my-10 h-[80%]'>
-     
-        <div className='w-full h-full p-3 px-5'>
-          <h1 className='text-3xl font-bold mx-60'>{job.Title}</h1>
-          <div className=''>
-            <h1 className='font-semibold '>{job.Title}</h1>
-            <h1 className='font-medium text-zinc-600 '>{job.Company}</h1>
-          </div>
-          <div className='desc mt-4'>
-            <h1 className=' font-semibold '>About the job</h1>
-            <p className='text-zinc-700'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Culpa voluptatem harum aliquid nesciunt accusamus, assumenda officia accusantium ad illum vitae nulla nihil quasi, at quod. Ipsa, quam repudiandae debitis labore voluptatem porro numquam, deleniti totam fugit maiores, ea temporibus reiciendis.</p></div>
-          <div className='flex justify-between items-center font-lg text-xl mt-8 px-10'>
-            <h1>{job.Salary}</h1>
-            <h1>{job.Duration}</h1>
-            <h1>{job.Location}</h1>
-            <h1>{job.Jobtype}</h1>
-          </div>
-          <div className='flex gap-8 mt-5 px-10'>
-            <h1 className='text-green-600'>Posted just now</h1>
-            <h1 className='text-zinc-700'>fresher job</h1>
-          </div>
-          <div className='mt-10 justify-between px-4 flex '>
-            <p className='text-zinc-700'>Be an early applicant</p>
-            {<button onClick={handlesubmit} className={`px-3 py-2 ${applied?'bg-blue-700':'bg-red-200'} rounded-xl`}>{applied ? 'Applied' : 'Apply'}</button>}
-            
-          </div>
         </div>
       </div>
-    </div>
-  )}
     </div>
   )
 }

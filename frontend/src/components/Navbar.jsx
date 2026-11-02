@@ -11,18 +11,21 @@ const Navbar = () => {
         <div className="links flex justify-center items center gap-8 text-zinc-800 ">
         <h1 className="text-xl ml-8 font-medium mt-2 text-zinc-700" >SkillVara</h1>
      <a className="text-base ml-8 font-medium " href="#">internships</a>
-     <a className="text-base font-medium "  href="#">jobs</a>
+     <Link className="text-base font-medium "  to={'/mainsection'}>jobs</Link>
      <a className="text-base font-medium "  href="#">companies</a>
         </div>
 
         {user?<div className=" login flex justify-center items center gap-12 mr-14 font-semibold"><Link to={'/'}>home</Link>
+        {user.role==='employer'
+          ? <Link to={'/employer'}>dashboard</Link>
+          : <Link to={'/applications'}>my applications</Link>}
         <Link className='text-[#f50b0b]' to={'/logout'}>logout</Link>
-        <Link to={'/profile'}>
+        {user.role!=='employer' && <Link to={'/profile'}>
         <div className='rounded-full h-7 w-7 bg-[#7dddea] text-black '><h1 className='px-[7px] py-[1.5px]'>{initial}</h1></div>
-        </Link></div>:<div className=" buttons flex justify-center items center gap-3 mr-6" >
+        </Link>}</div>:<div className=" buttons flex justify-center items center gap-3 mr-6" >
             <Button name={'Login'}to={'/login'}/>
             <Button name={'Candidate-Sign-up'}to={'/signup'}/>
-            <Button name={'Employer-Sign-up'}/>
+            <Button name={'Employer-Sign-up'}to={'/signup?role=employer'}/>
           </div>
     }
      </div>

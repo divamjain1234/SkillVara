@@ -5,8 +5,8 @@ const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';  // Fal
 
 mongoose.connect(mongoURI)
   .then(() => {
-    dbgr('MongoDB connected');
+    console.log('MongoDB connected');
   })
   .catch((error) => {
-    dbgr(`MongoDB connection error: ${error}`);
+    console.log(`MongoDB connection error: ${error}`);
   });

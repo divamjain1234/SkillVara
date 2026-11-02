@@ -10,12 +10,7 @@ const Profile = () => {
   useEffect(()=>{
     const fetchprofile=async()=>{
      try {
-      let response=await axios.get(`${import.meta.env.VITE_API_URL}/user/profileview`,{
-        params:{
-          username:user.username,
-          email:user.email
-        }
-       })
+      let response=await axios.get(`${import.meta.env.VITE_API_URL}/user/profileview`,{ withCredentials: true })
        setprofile(response.data)
      } catch (error) {
       console.log(error)

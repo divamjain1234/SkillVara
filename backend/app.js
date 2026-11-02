@@ -1,4 +1,6 @@
 require('dotenv').config();
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 require('./config/mongoose-connection');
 const express=require('express')
 const app=express();
@@ -22,5 +24,5 @@ app.use('/user',userroutes)
 app.use('/job',jobroutes)
 const port = process.env.PORT; 
 app.listen(port, () => {
-    dbgr('Server running on port ' + port);
+    console.log('Server running on port ' + port);
 });

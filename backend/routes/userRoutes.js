@@ -12,11 +12,11 @@ router.post('/login',login)
 router.get('/auth',isloggedin,(req,res)=>{
     res.json({isAuthenticated:true,user:req.user})
 })
-router.post('/createprofile',upload.fields([
+router.post('/createprofile',isloggedin,upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'resume', maxCount: 1 },
     { name: 'refrence', maxCount: 1 },
   ]),createprofile)
 router.post('/logout',logout)
-router.get('/profileview',profileview)
+router.get('/profileview',isloggedin,profileview)
 module.exports=router
