@@ -11,8 +11,6 @@ const login=async(req,res)=>{
       return res.status(400).json({message:'Email and password are required'})
     }
     const loginuser=await usermodel.findOne({email:email.trim()})
-    // Same message for "no such user" and "wrong password", so nobody can probe which emails exist.
-    // Previously these returned HTTP 200 with a plain string, so the frontend treated a wrong password as a successful login.
     const ok = loginuser ? await bcrypt.compare(password,loginuser.password) : false
     if(!ok){
       return res.status(401).json({message:'Invalid email or password'})
