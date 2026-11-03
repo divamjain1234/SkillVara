@@ -1,6 +1,4 @@
 const userprofilemodel = require('../models/userprofile');
-// Must run after isloggedin. The profile that gets saved is always the logged-in
-// user's own (taken from the cookie), never an email sent in the request body.
 const createprofile = async (req, res) => {
   console.log('FILES:', JSON.stringify(req.files, null, 2));
   try {
@@ -40,10 +38,6 @@ const createprofile = async (req, res) => {
       preferences: [preferences],
       skills: skillsArray,
     };
-
-    // Only overwrite a file when a new one was uploaded. Before, saving the form
-    // again without re-uploading wiped the existing image/resume.
-    // (.path holds the Cloudinary URL)
     const image = req.files?.image?.[0]?.path;
     const resume = req.files?.resume?.[0]?.path;
     const refrence = req.files?.refrence?.[0]?.path;
@@ -63,9 +57,9 @@ const createprofile = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(SyntaxError);                              // as a separate argument, not concatenated
-console.error(JSON.stringify(err, null, 2));     // if it still shows [object Object]
-console.error(err.message, err.http_code);       // Cloudinary-style errors
+    console.error(SyntaxError);
+console.error(JSON.stringify(err, null, 2));   
+console.error(err.message, err.http_code);    
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
