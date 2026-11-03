@@ -17,7 +17,6 @@ const signup=async (req,res)=>{
         if(typeof password !== 'string' || password.length < 6){
           return res.status(400).json({message:'Password must be at least 6 characters'})
         }
-        // Only these two roles can be chosen at signup. Never trust anything else (e.g. "admin").
         role = role === 'employer' ? 'employer' : 'candidate'
         if(role === 'employer' && !(typeof companyName === 'string' && companyName.trim())){
           return res.status(400).json({message:'Company name is required for employers'})
@@ -32,7 +31,6 @@ const signup=async (req,res)=>{
           role,
           companyName: role === 'employer' ? companyName.trim() : undefined
         })
-        // Only candidates have a profile (resume, skills...)
         if(role === 'candidate'){
           await userprofilemodel.create({
             user:newuser._id,
@@ -57,7 +55,6 @@ const signup=async (req,res)=>{
           }
         })
     } catch (error) {
-        // Duplicate username/email (unique index) used to leave the request hanging.
         if(error.code === 11000){
           return res.status(409).json({message:'Username or email is already registered'})
         }
